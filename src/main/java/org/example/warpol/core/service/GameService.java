@@ -33,6 +33,8 @@ public class GameService {
     private final GameRepository gameRepository;
     private final CommandRepository commandRepository;
     private final GameConfig gameConfig;
+    private final Random random;
+    private final RandomCommandHelper commandHelper;
 
     @Transactional
     public void createNewGameFromConfig() {
@@ -41,7 +43,6 @@ public class GameService {
                 UnitType.CANNON, gameConfig.getUnits().getCannon(),
                 UnitType.TRANSPORT, gameConfig.getUnits().getTransport()
         );
-
         createNewGame(unitsConfig, gameConfig.getBoard().getWidth(), gameConfig.getBoard().getHeight());
     }
 
@@ -57,7 +58,6 @@ public class GameService {
         game.setActive(true);
         game = gameRepository.save(game);
 
-        Random random = new Random();
         Set<String> occupiedPositions = new HashSet<>();
 
         for (PlayerColor color : PlayerColor.values()) {
@@ -68,6 +68,7 @@ public class GameService {
                         case TRANSPORT -> new TransportEntity();
                         case CANNON -> new CannonEntity();
                     };
+
                     unit.setColor(color);
                     unit.setType(entry.getKey());
                     unit.setStatus(UnitStatus.ACTIVE);
@@ -78,9 +79,8 @@ public class GameService {
                         x = random.nextInt(boardWidth);
                         y = random.nextInt(boardHeight);
                         key = x + ":" + y;
-                    } while (occupiedPositions.contains(key));
+                    } while (!occupiedPositions.add(key));
 
-                    occupiedPositions.add(key);
                     unit.setPositionX(x);
                     unit.setPositionY(y);
                     unit.setGame(game);
@@ -99,7 +99,9 @@ public class GameService {
     }
 
     @Transactional
-    public CommandResultResponse executeCommand(UUID unitId, CommandType commandType, int targetX, int targetY, PlayerColor playerColor) {
+    public CommandResultResponse executeCommand(UUID unitId, CommandType commandType,
+                                                int targetX, int targetY,
+                                                PlayerColor playerColor) {
         Unit unit = unitRepository.findById(unitId)
                 .orElseThrow(() -> new RuntimeException("Unit not found"));
 
@@ -111,78 +113,46 @@ public class GameService {
             throw new CooldownNotElapsedException("Cooldown not elapsed for " + commandType);
         }
 
-        List<Unit> unitsAtTarget = unitRepository.findAllByGameIdAndPositionXAndPositionY(
+        List<Unit> atTarget = unitRepository.findAllByGameIdAndPositionXAndPositionY(
                 unit.getGame().getId(), targetX, targetY);
 
-        boolean isValidAction = isIsValidAction(commandType, targetX, targetY, unit);
+        boolean valid = commandHelper.isValid(unit, commandType, targetX, targetY);
 
-        if (!isValidAction) {
+        if (!valid) {
             throw new RuntimeException("Invalid command for unit type");
         }
 
-        boolean hasFriendlyUnit = false;
+        boolean moved = false, shot = false, destroyed = false;
+
         switch (commandType) {
             case MOVE -> {
-                hasFriendlyUnit = unitsAtTarget.stream()
-                        .anyMatch(u -> u.getColor() == unit.getColor());
-
-                if (hasFriendlyUnit) {
+                boolean friendly = commandHelper.hasFriendly(unit, atTarget);
+                if (friendly) {
                     unit.setLastCommandTime(LocalDateTime.now());
                     unitRepository.save(unit);
                     break;
                 }
-
-                unitsAtTarget.stream()
-                        .filter(u -> u.getColor() != unit.getColor())
-                        .forEach(u -> {
-                            u.destroy();
-                            unitRepository.save(u);
-                        });
-
+                destroyed = commandHelper.destroyEnemies(atTarget, unitRepository);
                 unit.move(targetX, targetY);
+                moved = true;
             }
-            case SHOOT -> unitsAtTarget.forEach(target -> {
-                target.destroy();
-                unitRepository.save(target);
-            });
+            case SHOOT -> {
+                destroyed = commandHelper.destroyEnemies(atTarget, unitRepository);
+                shot = true;
+            }
         }
 
-        CommandEntity command = new CommandEntity();
-        command.setCommandType(commandType);
-        command.setColor(playerColor);
-        command.setTargetX(targetX);
-        command.setTargetY(targetY);
-        command.setExecutionTime(LocalDateTime.now());
-        command.setGame(unit.getGame());
-        command.setUnit(unit);
-        commandRepository.save(command);
+        CommandEntity cmd = commandHelper.buildCommand(unit, commandType, targetX, targetY);
+        commandRepository.save(cmd);
 
         unit.setLastCommandTime(LocalDateTime.now());
         unitRepository.save(unit);
 
-        return new CommandResultResponse(
-                "Unit moved to (" + targetX + "," + targetY + ")",
-                !unitsAtTarget.isEmpty() && commandType == CommandType.SHOOT,
-                commandType == CommandType.MOVE && !hasFriendlyUnit,
-                commandType == CommandType.SHOOT
-        );
-
-    }
-
-    private static boolean isIsValidAction(CommandType commandType, int targetX, int targetY, Unit unit) {
-        return switch (unit.getType()) {
-            case TRANSPORT -> commandType == CommandType.MOVE &&
-                    (Math.abs(unit.getPositionX() - targetX) + Math.abs(unit.getPositionY() - targetY)) <= 3 &&
-                    (unit.getPositionX() == targetX || unit.getPositionY() == targetY);
-
-            case ARCHER -> commandType == CommandType.MOVE
-                    ? Math.abs(unit.getPositionX() - targetX) + Math.abs(unit.getPositionY() - targetY) == 1
-                    && (unit.getPositionX() == targetX || unit.getPositionY() == targetY)
-                    : commandType == CommandType.SHOOT
-                    && (unit.getPositionX() == targetX || unit.getPositionY() == targetY);
-
-            case CANNON -> commandType == CommandType.SHOOT;
-        };
+        String res = commandType == CommandType.SHOOT
+                ? "Unit shot to (" + targetX + "," + targetY + ")"
+                : moved ? "Unit moved to (" + targetX + "," + targetY + ")"
+                : "Unit stayed in place";
+        return new CommandResultResponse(res, destroyed, moved, shot);
     }
 
     @Transactional
@@ -190,15 +160,10 @@ public class GameService {
         Unit unit = unitRepository.findById(unitId)
                 .orElseThrow(() -> new RuntimeException("Unit not found"));
 
-        Random random = new Random();
-        CommandType commandType = unit.getType() == UnitType.TRANSPORT ? CommandType.MOVE :
-                random.nextBoolean() ? CommandType.MOVE : CommandType.SHOOT;
+        CommandType type = commandHelper.getRandomCommandForUnit(unit, random);
 
-        int offsetX = random.nextInt(7) - 3;
-        int offsetY = random.nextInt(7) - 3;
-        int targetX = Math.min(Math.max(unit.getPositionX() + offsetX, 0), unit.getGame().getWidth() - 1);
-        int targetY = Math.min(Math.max(unit.getPositionY() + offsetY, 0), unit.getGame().getHeight() - 1);
+        int[] target = commandHelper.getRandomTargetFor(unit, type, unit.getGame().getWidth(), unit.getGame().getHeight(), random);
 
-        return executeCommand(unitId, commandType, targetX, targetY, playerColor);
+        return executeCommand(unitId, type, target[0], target[1], playerColor);
     }
 }
