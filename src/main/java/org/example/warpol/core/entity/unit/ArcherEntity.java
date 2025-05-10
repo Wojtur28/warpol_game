@@ -15,7 +15,7 @@ public class ArcherEntity extends Unit {
     @Override
     public Duration getCooldown(CommandType commandType) {
         return switch (commandType) {
-            case MOVE, RANDOM_MOVE -> Duration.ofSeconds(5);
+            case MOVE -> Duration.ofSeconds(5);
             case SHOOT -> Duration.ofSeconds(10);
         };
     }

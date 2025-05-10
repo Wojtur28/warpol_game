@@ -19,6 +19,9 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 public abstract class Unit extends BaseEntity {
 
+    @Version
+    private Integer version;
+
     private int positionX;
     private int positionY;
 
