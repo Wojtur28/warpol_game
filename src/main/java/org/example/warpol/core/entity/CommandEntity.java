@@ -27,8 +27,6 @@ public class CommandEntity extends BaseEntity {
 
     private int targetY;
 
-    private boolean isExecuted;
-
     private LocalDateTime executionTime;
 
     @ManyToOne

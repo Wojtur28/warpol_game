@@ -1,6 +1,7 @@
 package org.example.warpol.core.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.warpol.core.dto.CommandResultResponse;
 import org.example.warpol.core.dto.ExecuteCommandRequest;
 import org.example.warpol.core.dto.PlayerCommandRequest;
 import org.example.warpol.core.dto.UnitResponse;
@@ -34,21 +35,21 @@ public class GameController {
     }
 
     @PostMapping("/command/execute")
-    public ResponseEntity<String> executeCommand(@RequestBody PlayerCommandRequest<ExecuteCommandRequest> request) {
-        gameService.executeCommand(
+    public ResponseEntity<CommandResultResponse> executeCommand(@RequestBody PlayerCommandRequest<ExecuteCommandRequest> request) {
+        CommandResultResponse result = gameService.executeCommand(
                 request.command().unitId(),
                 request.command().commandType(),
                 request.command().targetX(),
                 request.command().targetY(),
                 request.playerColor()
         );
-        return ResponseEntity.ok("Command executed");
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/command/random")
-    public ResponseEntity<String> executeRandomCommand(@RequestBody PlayerCommandRequest<UUID> request) {
-        gameService.executeRandomCommand(request.playerColor(), request.command());
-        return ResponseEntity.ok("Random command executed");
+    public ResponseEntity<CommandResultResponse> executeRandomCommand(@RequestBody PlayerCommandRequest<UUID> request) {
+        CommandResultResponse result = gameService.executeRandomCommand(request.playerColor(), request.command());
+        return ResponseEntity.ok(result);
     }
 }
 
