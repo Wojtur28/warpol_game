@@ -1,5 +1,10 @@
 # Warpol API
 
+This is a recruitment assignment for Warpo.
+
+You can find a ready-to-import Postman collection of all endpoints in the [commands.postman_collection.json](https://github.com/Wojtur28/warpol_game/blob/main/commands.postman_collection.json) file in this repo.
+
+
 Demo: http://194.163.166.24:8081/swagger-ui/index.html (I hope it's work)
 
 ## API Reference
