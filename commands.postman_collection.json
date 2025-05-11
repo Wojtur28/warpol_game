@@ -1,0 +1,479 @@
+{
+	"info": {
+		"_postman_id": "db57586d-65a6-415d-9c8b-1f3559b3a26c",
+		"name": "commands",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22668946"
+	},
+	"item": [
+		{
+			"name": "local",
+			"item": [
+				{
+					"name": "white",
+					"item": [
+						{
+							"name": "get_units_white",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/api/v1/units?color=WHITE",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"v1",
+										"units"
+									],
+									"query": [
+										{
+											"key": "color",
+											"value": "WHITE"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create_command_white",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"playerColor\": \"WHITE\",\n    \"command\": {\n    \"unitId\": \"d279f6f9-ac75-496e-a09f-f338474add9d\",\n    \"commandType\": \"MOVE\",\n    \"targetX\": 2,\n    \"targetY\": 7\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8081/api/v1/command/execute",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"v1",
+										"command",
+										"execute"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create_random_command_white",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"playerColor\": \"WHITE\",\n    \"command\": \"5fea90ae-6d14-49ba-b856-80c12ef751e4\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8081/api/v1/command/random",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"v1",
+										"command",
+										"random"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "black",
+					"item": [
+						{
+							"name": "get_units_black",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/api/v1/units?color=BLACK",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"v1",
+										"units"
+									],
+									"query": [
+										{
+											"key": "color",
+											"value": "BLACK"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create_command_black",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"playerColor\": \"BLACK\",\n    \"command\": {\n    \"unitId\": \"938ac58e-9982-4557-808a-f8be1776bb4e\",\n    \"commandType\": \"MOVE\",\n    \"targetX\": 7,\n    \"targetY\": 6\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8081/api/v1/command/execute",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"v1",
+										"command",
+										"execute"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create_random_command_black",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"playerColor\": \"BLACK\",\n    \"command\": \"3b58dcc3-8091-4149-9d22-80ad5788d638\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8081/api/v1/command/random",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"v1",
+										"command",
+										"random"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "create_new_game",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/v1/game/new",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"v1",
+								"game",
+								"new"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "vps",
+			"item": [
+				{
+					"name": "white",
+					"item": [
+						{
+							"name": "get_units_white",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://194.163.166.24:8081/api/v1/units?color=WHITE",
+									"protocol": "http",
+									"host": [
+										"194",
+										"163",
+										"166",
+										"24"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"v1",
+										"units"
+									],
+									"query": [
+										{
+											"key": "color",
+											"value": "WHITE"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create_command_white",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"playerColor\": \"WHITE\",\n    \"command\": {\n    \"unitId\": \"af657a92-b0f5-4a14-948d-dfd4b41ee764\",\n    \"commandType\": \"SHOOT\",\n    \"targetX\": 0,\n    \"targetY\": 7\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://194.163.166.24:8081/api/v1/command/execute",
+									"protocol": "http",
+									"host": [
+										"194",
+										"163",
+										"166",
+										"24"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"v1",
+										"command",
+										"execute"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create_random_command_white",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"playerColor\": \"WHITE\",\n    \"command\": \"5fea90ae-6d14-49ba-b856-80c12ef751e4\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://194.163.166.24:8081/api/v1/command/random",
+									"protocol": "http",
+									"host": [
+										"194",
+										"163",
+										"166",
+										"24"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"v1",
+										"command",
+										"random"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "black",
+					"item": [
+						{
+							"name": "get_units_black",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://194.163.166.24:8081/api/v1/units?color=BLACK",
+									"protocol": "http",
+									"host": [
+										"194",
+										"163",
+										"166",
+										"24"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"v1",
+										"units"
+									],
+									"query": [
+										{
+											"key": "color",
+											"value": "BLACK"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create_command_black",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"playerColor\": \"BLACK\",\n    \"command\": {\n    \"unitId\": \"938ac58e-9982-4557-808a-f8be1776bb4e\",\n    \"commandType\": \"MOVE\",\n    \"targetX\": 7,\n    \"targetY\": 6\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://194.163.166.24:8081/api/v1/command/execute",
+									"protocol": "http",
+									"host": [
+										"194",
+										"163",
+										"166",
+										"24"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"v1",
+										"command",
+										"execute"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create_random_command_black",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"playerColor\": \"BLACK\",\n    \"command\": \"3b58dcc3-8091-4149-9d22-80ad5788d638\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://194.163.166.24:8081/api/v1/command/random",
+									"protocol": "http",
+									"host": [
+										"194",
+										"163",
+										"166",
+										"24"
+									],
+									"port": "8081",
+									"path": [
+										"api",
+										"v1",
+										"command",
+										"random"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "create_new_game Copy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://194.163.166.24:8081/api/v1/game/new",
+							"protocol": "http",
+							"host": [
+								"194",
+								"163",
+								"166",
+								"24"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"v1",
+								"game",
+								"new"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
