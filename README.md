@@ -7,6 +7,21 @@ You can find a ready-to-import Postman collection of all endpoints in the [comma
 
 Demo: http://194.163.166.24:8081/swagger-ui/index.html (I hope it's work)
 
+## Configuration
+
+In `application.yml` you can adjust the board size and initial unit counts:
+
+```yaml
+game:
+  board:
+    width: 8
+    height: 8
+  units:
+    archer: 4
+    cannon: 2
+    transport: 2
+```
+
 ## API Reference
 
 ### Create new game
