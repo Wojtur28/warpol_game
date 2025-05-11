@@ -23,3 +23,5 @@ game:
     archer: 4
     cannon: 2
     transport: 2
+server:
+  port: 8081
